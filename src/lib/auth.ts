@@ -9,11 +9,7 @@ export async function getCurrentUser() {
     const { userId } = await auth();
     if (!userId) return null;
 
-    const [user] = await db
-        .select()
-        .from(users)
-        .where(eq(users.clerkId, userId))
-        .limit(1);
+    const [user] = await db.select().from(users).where(eq(users.clerkId, userId)).limit(1);
 
     return user ?? null;
 }

@@ -16,9 +16,9 @@ export default function OnboardingPage() {
     const { mutateAsync: syncUser } = useSyncUser();
     const { mutateAsync: createWorkspace, isPending } = useCreateWorkspace();
 
-    const [name, setName]   = useState("");
-    const [slug, setSlug]   = useState("");
-    const [step, setStep]   = useState<"syncing" | "workspace">("syncing");
+    const [name, setName] = useState("");
+    const [slug, setSlug] = useState("");
+    const [step, setStep] = useState<"syncing" | "workspace">("syncing");
     const [error, setError] = useState("");
 
     // Step 1: sync Clerk user to our DB
@@ -26,9 +26,9 @@ export default function OnboardingPage() {
         if (!isLoaded || !user) return;
 
         syncUser({
-            clerkId:   user.id,
-            email:     user.emailAddresses[0].emailAddress,
-            name:      user.fullName ?? user.firstName ?? "User",
+            clerkId: user.id,
+            email: user.emailAddresses[0].emailAddress,
+            name: user.fullName ?? user.firstName ?? "User",
             avatarUrl: user.imageUrl,
         }).then(() => setStep("workspace"));
     }, [isLoaded, user, syncUser]);
@@ -59,12 +59,8 @@ export default function OnboardingPage() {
 
     if (step === "syncing") {
         return (
-            <div className="min-h-screen flex items-center justify-center">
-                <motion.p
-                    initial={{ opacity: 0 }}
-                    animate={{ opacity: 1 }}
-                    className="text-muted-foreground"
-                >
+            <div className="flex min-h-screen items-center justify-center">
+                <motion.p initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="text-muted-foreground">
                     Setting up your account...
                 </motion.p>
             </div>
@@ -72,7 +68,7 @@ export default function OnboardingPage() {
     }
 
     return (
-        <div className="min-h-screen flex items-center justify-center p-4">
+        <div className="flex min-h-screen items-center justify-center p-4">
             <motion.div
                 initial={{ opacity: 0, y: 24 }}
                 animate={{ opacity: 1, y: 0 }}
@@ -82,9 +78,7 @@ export default function OnboardingPage() {
                 <Card>
                     <CardHeader>
                         <CardTitle>Create your workspace</CardTitle>
-                        <CardDescription>
-                            A workspace is where your team manages projects and issues.
-                        </CardDescription>
+                        <CardDescription>A workspace is where your team manages projects and issues.</CardDescription>
                     </CardHeader>
                     <CardContent className="flex flex-col gap-4">
                         <div className="flex flex-col gap-1.5">
@@ -99,23 +93,13 @@ export default function OnboardingPage() {
                         <div className="flex flex-col gap-1.5">
                             <label className="text-sm font-medium">URL slug</label>
                             <div className="flex items-center gap-2">
-                <span className="text-sm text-muted-foreground">
-                  taska.app/
-                </span>
-                                <Input
-                                    placeholder="acme"
-                                    value={slug}
-                                    onChange={(e) => setSlug(e.target.value)}
-                                />
+                                <span className="text-muted-foreground text-sm">taska.app/</span>
+                                <Input placeholder="acme" value={slug} onChange={(e) => setSlug(e.target.value)} />
                             </div>
-                            <p className="text-xs text-muted-foreground">
-                                Lowercase letters, numbers and hyphens only
-                            </p>
+                            <p className="text-muted-foreground text-xs">Lowercase letters, numbers and hyphens only</p>
                         </div>
 
-                        {error && (
-                            <p className="text-sm text-destructive">{error}</p>
-                        )}
+                        {error && <p className="text-destructive text-sm">{error}</p>}
 
                         <Button
                             onClick={handleCreate}

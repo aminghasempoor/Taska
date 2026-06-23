@@ -23,9 +23,7 @@ export function useRealtimeBoard(projectId: string) {
             .on("broadcast", { event: "board" }, ({ payload }: { payload: BoardEvent }) => {
                 // When any board event arrives → invalidate that project's issues
                 if (payload.projectId === projectId) {
-                    queryClient.invalidateQueries(
-                        orpc.issue.byProject.queryOptions({ input: { projectId } })
-                    );
+                    queryClient.invalidateQueries(orpc.issue.byProject.queryOptions({ input: { projectId } }));
                 }
             })
             .subscribe();

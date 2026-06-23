@@ -6,21 +6,8 @@ import { motion } from "framer-motion";
 import { STATUS_CONFIG, PRIORITY_CONFIG } from "@/lib/config";
 import type { Issue } from "@/db/schema";
 
-export function IssueCard({
-                              issue,
-                              onClick,
-                          }: {
-    issue: Issue;
-    onClick?: () => void;
-}) {
-    const {
-        attributes,
-        listeners,
-        setNodeRef,
-        transform,
-        transition,
-        isDragging,
-    } = useSortable({ id: issue.id });
+export function IssueCard({ issue, onClick }: { issue: Issue; onClick?: () => void }) {
+    const { attributes, listeners, setNodeRef, transform, transition, isDragging } = useSortable({ id: issue.id });
 
     const style = {
         transform: CSS.Transform.toString(transform),
@@ -28,7 +15,7 @@ export function IssueCard({
         opacity: isDragging ? 0.4 : 1,
     };
 
-    const StatusIcon   = STATUS_CONFIG[issue.status].icon;
+    const StatusIcon = STATUS_CONFIG[issue.status].icon;
     const PriorityIcon = PRIORITY_CONFIG[issue.priority].icon;
 
     return (
@@ -40,21 +27,15 @@ export function IssueCard({
                 exit={{ opacity: 0, y: -8 }}
                 transition={{ duration: 0.15 }}
                 onClick={onClick}
-                className="bg-background border rounded-lg px-3 py-2.5 cursor-pointer
-                   hover:border-primary/40 hover:shadow-sm transition-all
-                   flex flex-col gap-2 group"
+                className="bg-background hover:border-primary/40 group flex cursor-pointer flex-col gap-2 rounded-lg border px-3 py-2.5 transition-all hover:shadow-sm"
             >
                 {/* Title */}
-                <p className="text-sm font-medium leading-snug">{issue.title}</p>
+                <p className="text-sm leading-snug font-medium">{issue.title}</p>
 
                 {/* Footer */}
                 <div className="flex items-center gap-2">
-                    <PriorityIcon
-                        className={`h-3.5 w-3.5 shrink-0 ${PRIORITY_CONFIG[issue.priority].color}`}
-                    />
-                    <StatusIcon
-                        className={`h-3.5 w-3.5 shrink-0 ${STATUS_CONFIG[issue.status].color}`}
-                    />
+                    <PriorityIcon className={`h-3.5 w-3.5 shrink-0 ${PRIORITY_CONFIG[issue.priority].color}`} />
+                    <StatusIcon className={`h-3.5 w-3.5 shrink-0 ${STATUS_CONFIG[issue.status].color}`} />
                 </div>
             </motion.div>
         </div>

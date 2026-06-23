@@ -37,9 +37,7 @@ export function useCreateWorkspace() {
 // ─── Project ───────────────────────────────────────────────────────────────
 
 export function useProjects(workspaceId: string) {
-    return useQuery(
-        orpc.project.list.queryOptions({ input: { workspaceId } })
-    );
+    return useQuery(orpc.project.list.queryOptions({ input: { workspaceId } }));
 }
 
 export function useCreateProject() {
@@ -59,9 +57,7 @@ export function useCreateProject() {
 // ─── Issue ─────────────────────────────────────────────────────────────────
 
 export function useIssues(projectId: string) {
-    return useQuery(
-        orpc.issue.byProject.queryOptions({ input: { projectId } })
-    );
+    return useQuery(orpc.issue.byProject.queryOptions({ input: { projectId } }));
 }
 
 export function useCreateIssue() {
@@ -107,9 +103,7 @@ export function useDeleteIssue(projectId: string) {
     return useMutation({
         ...orpc.issue.delete.mutationOptions(),
         onSuccess: () => {
-            queryClient.invalidateQueries(
-                orpc.issue.byProject.queryOptions({ input: { projectId } })
-            );
+            queryClient.invalidateQueries(orpc.issue.byProject.queryOptions({ input: { projectId } }));
             broadcastBoardEvent({
                 type: "issue.deleted",
                 projectId,

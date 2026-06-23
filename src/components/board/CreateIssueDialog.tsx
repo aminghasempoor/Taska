@@ -2,32 +2,20 @@
 
 import { useState } from "react";
 import { useCreateIssue } from "@/hooks";
-import {
-    Dialog, DialogContent, DialogHeader,
-    DialogTitle, DialogTrigger,
-} from "@/components/ui/dialog";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
-import {
-    Select, SelectContent, SelectItem,
-    SelectTrigger, SelectValue,
-} from "@/components/ui/select";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Plus } from "lucide-react";
 import { STATUS_CONFIG, PRIORITY_CONFIG, ALL_STATUSES, type IssueStatus, type IssuePriority } from "@/lib/config";
 
-export function CreateIssueDialog({
-                                      projectId,
-                                      defaultStatus,
-                                  }: {
-    projectId: string;
-    defaultStatus?: IssueStatus;
-}) {
-    const [open, setOpen]           = useState(false);
-    const [title, setTitle]         = useState("");
-    const [description, setDesc]    = useState("");
-    const [status, setStatus]       = useState<IssueStatus>(defaultStatus ?? "backlog");
-    const [priority, setPriority]   = useState<IssuePriority>("none");
+export function CreateIssueDialog({ projectId, defaultStatus }: { projectId: string; defaultStatus?: IssueStatus }) {
+    const [open, setOpen] = useState(false);
+    const [title, setTitle] = useState("");
+    const [description, setDesc] = useState("");
+    const [status, setStatus] = useState<IssueStatus>(defaultStatus ?? "backlog");
+    const [priority, setPriority] = useState<IssuePriority>("none");
 
     const { mutate: createIssue, isPending } = useCreateIssue();
 
@@ -80,7 +68,7 @@ export function CreateIssueDialog({
                             <SelectContent>
                                 {ALL_STATUSES.map((s) => {
                                     const config = STATUS_CONFIG[s];
-                                    const Icon   = config.icon;
+                                    const Icon = config.icon;
                                     return (
                                         <SelectItem key={s} value={s}>
                                             <div className="flex items-center gap-2">

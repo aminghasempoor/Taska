@@ -3,9 +3,9 @@ import { z } from "zod";
 // ─── User ──────────────────────────────────────────────────────────────────
 
 export const syncUserSchema = z.object({
-    clerkId:   z.string(),
-    email:     z.string().email(),
-    name:      z.string().min(1),
+    clerkId: z.string(),
+    email: z.string().email(),
+    name: z.string().min(1),
     avatarUrl: z.string().url().optional(),
 });
 
@@ -23,9 +23,9 @@ export const createWorkspaceSchema = z.object({
 // ─── Project ───────────────────────────────────────────────────────────────
 
 export const createProjectSchema = z.object({
-    name:        z.string().min(1).max(50),
+    name: z.string().min(1).max(50),
     description: z.string().max(500).optional(),
-    identifier:  z
+    identifier: z
         .string()
         .min(2)
         .max(5)
@@ -36,22 +36,22 @@ export const createProjectSchema = z.object({
 // ─── Issue ─────────────────────────────────────────────────────────────────
 
 export const createIssueSchema = z.object({
-    title:      z.string().min(1).max(200),
+    title: z.string().min(1).max(200),
     description: z.string().optional(),
-    status:     z.enum(["backlog", "todo", "in_progress", "done", "cancelled"]).default("backlog"),
-    priority:   z.enum(["none", "low", "medium", "high", "urgent"]).default("none"),
-    projectId:  z.string().uuid(),
+    status: z.enum(["backlog", "todo", "in_progress", "done", "cancelled"]).default("backlog"),
+    priority: z.enum(["none", "low", "medium", "high", "urgent"]).default("none"),
+    projectId: z.string().uuid(),
     assigneeId: z.string().uuid().optional(),
 });
 
 export const updateIssueSchema = z.object({
-    id:          z.string().uuid(),
-    title:       z.string().min(1).max(200).optional(),
+    id: z.string().uuid(),
+    title: z.string().min(1).max(200).optional(),
     description: z.string().optional(),
-    status:      z.enum(["backlog", "todo", "in_progress", "done", "cancelled"]).optional(),
-    priority:    z.enum(["none", "low", "medium", "high", "urgent"]).optional(),
-    assigneeId:  z.string().uuid().nullable().optional(),
-    position:    z.number().int().optional(),
+    status: z.enum(["backlog", "todo", "in_progress", "done", "cancelled"]).optional(),
+    priority: z.enum(["none", "low", "medium", "high", "urgent"]).optional(),
+    assigneeId: z.string().uuid().nullable().optional(),
+    position: z.number().int().optional(),
 });
 
 export const deleteIssueSchema = z.object({
@@ -65,7 +65,7 @@ export const getIssuesByProjectSchema = z.object({
 // ─── Comment ───────────────────────────────────────────────────────────────
 
 export const createCommentSchema = z.object({
-    body:    z.string().min(1).max(2000),
+    body: z.string().min(1).max(2000),
     issueId: z.string().uuid(),
 });
 
@@ -75,10 +75,10 @@ export const deleteCommentSchema = z.object({
 
 // ─── Inferred types ────────────────────────────────────────────────────────
 
-export type SyncUserInput           = z.infer<typeof syncUserSchema>;
-export type CreateWorkspaceInput    = z.infer<typeof createWorkspaceSchema>;
-export type CreateProjectInput      = z.infer<typeof createProjectSchema>;
-export type CreateIssueInput        = z.infer<typeof createIssueSchema>;
-export type UpdateIssueInput        = z.infer<typeof updateIssueSchema>;
+export type SyncUserInput = z.infer<typeof syncUserSchema>;
+export type CreateWorkspaceInput = z.infer<typeof createWorkspaceSchema>;
+export type CreateProjectInput = z.infer<typeof createProjectSchema>;
+export type CreateIssueInput = z.infer<typeof createIssueSchema>;
+export type UpdateIssueInput = z.infer<typeof updateIssueSchema>;
 export type GetIssuesByProjectInput = z.infer<typeof getIssuesByProjectSchema>;
-export type CreateCommentInput      = z.infer<typeof createCommentSchema>;
+export type CreateCommentInput = z.infer<typeof createCommentSchema>;

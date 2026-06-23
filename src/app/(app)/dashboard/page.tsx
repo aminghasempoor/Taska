@@ -13,7 +13,7 @@ export default function DashboardPage() {
 
     if (isPending) {
         return (
-            <div className="flex items-center justify-center h-full">
+            <div className="flex h-full items-center justify-center">
                 <p className="text-muted-foreground text-sm">Loading...</p>
             </div>
         );
@@ -26,14 +26,11 @@ export default function DashboardPage() {
     }
 
     return (
-        <div className="max-w-2xl mx-auto px-6 py-16">
-            <div className="flex items-center justify-between mb-8">
+        <div className="mx-auto max-w-2xl px-6 py-16">
+            <div className="mb-8 flex items-center justify-between">
                 <h1 className="text-2xl font-semibold tracking-tight">Workspaces</h1>
-                <Button
-                    size="sm"
-                    onClick={() => router.push("/onboarding")}
-                >
-                    <Plus className="h-4 w-4 mr-1" />
+                <Button size="sm" onClick={() => router.push("/onboarding")}>
+                    <Plus className="mr-1 h-4 w-4" />
                     New
                 </Button>
             </div>
@@ -50,23 +47,21 @@ export default function DashboardPage() {
                     <motion.div
                         key={ws.id}
                         variants={{
-                            hidden:  { opacity: 0, y: 12 },
+                            hidden: { opacity: 0, y: 12 },
                             visible: { opacity: 1, y: 0 },
                         }}
                     >
                         <Card
-                            className="cursor-pointer hover:bg-accent transition-colors"
+                            className="hover:bg-accent cursor-pointer transition-colors"
                             onClick={() => router.push(`/${ws.slug}`)}
                         >
                             <CardContent className="flex items-center gap-4 py-4">
-                                <div className="h-9 w-9 rounded-md bg-primary/10 flex items-center justify-center">
-                                    <Layout className="h-4 w-4 text-primary" />
+                                <div className="bg-primary/10 flex h-9 w-9 items-center justify-center rounded-md">
+                                    <Layout className="text-primary h-4 w-4" />
                                 </div>
                                 <div>
-                                    <p className="font-medium text-sm">{ws.name}</p>
-                                    <p className="text-xs text-muted-foreground">
-                                        taska.app/{ws.slug}
-                                    </p>
+                                    <p className="text-sm font-medium">{ws.name}</p>
+                                    <p className="text-muted-foreground text-xs">taska.app/{ws.slug}</p>
                                 </div>
                             </CardContent>
                         </Card>
