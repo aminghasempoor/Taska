@@ -3,6 +3,7 @@ import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import { ClerkProvider } from '@clerk/nextjs'
 import {TooltipProvider} from "@/components/ui/tooltip";
+import {ReactQueryProviders} from "@/providers/react-query";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -31,7 +32,9 @@ export default function RootLayout({
     >
       <body className="min-h-full flex flex-col">
       <ClerkProvider>
+        <ReactQueryProviders>
         <TooltipProvider>{children}</TooltipProvider>
+        </ReactQueryProviders>
       </ClerkProvider>
       </body>
     </html>

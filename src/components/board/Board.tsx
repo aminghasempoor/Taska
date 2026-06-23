@@ -1,0 +1,108 @@
+"use client";
+
+import { useState, useCallback } from "react";
+import {
+    DndContext,
+    DragOverlay,
+    PointerSensor,
+    useSensor,
+    useSensors,
+    type DragEndEvent,
+    type DragStartEvent,
+} from "@dnd-kit/core";
+import { BoardColumn } from "./BoardColumn";
+import { IssueCard } from "./IssueCard";
+import { useIssues, useUpdateIssue } from "@/hooks";
+import { ALL_STATUSES, type IssueStatus } from "@/lib/config";
+import type { Issue } from "@/db/schema";
+import {useRealtimeBoard} from "@/hooks/useRealtimeBoard";
+
+export function Board({ projectId }: { projectId: string }) {
+    const { data: issues = [], isPending } = useIssues(projectId);
+    const { mutate: updateIssue } = useUpdateIssue();
+    useRealtimeBoard(projectId);
+
+    const [activeIssue, setActiveIssue] = useState<Issue | null>(null);
+
+    // PointerSensor with a small activation distance
+    // prevents accidental drags when clicking
+    const sensors = useSensors(
+        useSensor(PointerSensor, {
+            activationConstraint: { distance: 8 },
+        })
+    );
+
+    // Group issues by status
+    const issuesByStatus = useCallback(() => {
+        return ALL_STATUSES.reduce((acc, status) => {
+            acc[status] = issues
+                .filter((i) => i.status === status)
+                .sort((a, b) => a.position - b.position);
+            return acc;
+        }, {} as Record<IssueStatus, Issue[]>);
+    }, [issues]);
+
+    function handleDragStart(event: DragStartEvent) {
+        const issue = issues.find((i) => i.id === event.active.id);
+        if (issue) setActiveIssue(issue);
+    }
+
+    function handleDragEnd(event: DragEndEvent) {
+        setActiveIssue(null);
+        const { active, over } = event;
+        if (!over) return;
+
+        const activeIssue = issues.find((i) => i.id === active.id);
+        if (!activeIssue) return;
+
+        // over.id could be a column status or another issue id
+        const overStatus = ALL_STATUSES.includes(over.id as IssueStatus)
+            ? (over.id as IssueStatus)
+            : issues.find((i) => i.id === over.id)?.status;
+
+        if (!overStatus) return;
+
+        // Status changed — update in DB
+        if (activeIssue.status !== overStatus) {
+            updateIssue({ id: activeIssue.id, status: overStatus });
+        }
+    }
+
+    if (isPending) {
+        return (
+            <div className="flex items-center justify-center h-64">
+                <p className="text-sm text-muted-foreground">Loading board...</p>
+            </div>
+        );
+    }
+
+    const grouped = issuesByStatus();
+
+    return (
+        <DndContext
+            sensors={sensors}
+            onDragStart={handleDragStart}
+            onDragEnd={handleDragEnd}
+        >
+            <div className="flex gap-4 overflow-x-auto pb-4 px-6 h-full">
+                {ALL_STATUSES.map((status) => (
+                    <BoardColumn
+                        key={status}
+                        status={status}
+                        issues={grouped[status]}
+                        projectId={projectId}
+                    />
+                ))}
+            </div>
+
+            {/* Ghost card shown while dragging */}
+            <DragOverlay>
+                {activeIssue ? (
+                    <div className="rotate-2 opacity-90">
+                        <IssueCard issue={activeIssue} />
+                    </div>
+                ) : null}
+            </DragOverlay>
+        </DndContext>
+    );
+}
