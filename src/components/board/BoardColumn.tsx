@@ -12,10 +12,12 @@ export function BoardColumn({
     status,
     issues,
     projectId,
+                                onIssueClick
 }: {
     status: IssueStatus;
     issues: Issue[];
     projectId: string;
+    onIssueClick: (issue: Issue) => void;
 }) {
     const config = STATUS_CONFIG[status];
     const Icon = config.icon;
@@ -41,7 +43,11 @@ export function BoardColumn({
                 <SortableContext items={issues.map((i) => i.id)} strategy={verticalListSortingStrategy}>
                     <AnimatePresence>
                         {issues.map((issue) => (
-                            <IssueCard key={issue.id} issue={issue} />
+                            <IssueCard
+                                key={issue.id}
+                                issue={issue}
+                                onClick={() => onIssueClick(issue)}  // ← add this
+                            />
                         ))}
                     </AnimatePresence>
                 </SortableContext>

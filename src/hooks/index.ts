@@ -111,3 +111,33 @@ export function useDeleteIssue(projectId: string) {
         },
     });
 }
+
+export function useComments(issueId: string) {
+    return useQuery(
+        orpc.comment.byIssue.queryOptions({ input: { issueId } })
+    );
+}
+
+export function useCreateComment() {
+    const queryClient = useQueryClient();
+    return useMutation({
+        ...orpc.comment.create.mutationOptions(),
+        onSuccess: (_, variables) => {
+            queryClient.invalidateQueries(
+                orpc.comment.byIssue.queryOptions({ input: { issueId: variables.issueId } })
+            );
+        },
+    });
+}
+
+export function useDeleteComment() {
+    const queryClient = useQueryClient();
+    return useMutation({
+        ...orpc.comment.delete.mutationOptions(),
+        onSuccess: (_, variables, context: any) => {
+            queryClient.invalidateQueries(
+                orpc.comment.byIssue.queryOptions({ input: { issueId: context.issueId } })
+            );
+        },
+    });
+}

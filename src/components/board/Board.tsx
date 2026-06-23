@@ -2,45 +2,39 @@
 
 import { useState, useCallback } from "react";
 import {
-    DndContext,
-    DragOverlay,
-    PointerSensor,
-    useSensor,
-    useSensors,
-    type DragEndEvent,
-    type DragStartEvent,
+    DndContext, DragOverlay, PointerSensor,
+    useSensor, useSensors,
+    type DragEndEvent, type DragStartEvent,
 } from "@dnd-kit/core";
+import { arrayMove } from "@dnd-kit/sortable";
 import { BoardColumn } from "./BoardColumn";
 import { IssueCard } from "./IssueCard";
+import { IssuePanel } from "@/components/issue/IssuePanel";
 import { useIssues, useUpdateIssue } from "@/hooks";
+import { useRealtimeBoard } from "@/hooks/useRealtimeBoard";
 import { ALL_STATUSES, type IssueStatus } from "@/lib/config";
 import type { Issue } from "@/db/schema";
-import { useRealtimeBoard } from "@/hooks/useRealtimeBoard";
 
 export function Board({ projectId }: { projectId: string }) {
-    const { data: issues = [], isPending } = useIssues(projectId);
-    const { mutate: updateIssue } = useUpdateIssue();
     useRealtimeBoard(projectId);
 
-    const [activeIssue, setActiveIssue] = useState<Issue | null>(null);
+    const { data: issues = [], isPending } = useIssues(projectId);
+    const { mutate: updateIssue }          = useUpdateIssue();
 
-    // PointerSensor with a small activation distance
-    // prevents accidental drags when clicking
+    const [activeIssue,   setActiveIssue]   = useState<Issue | null>(null);
+    const [selectedIssue, setSelectedIssue] = useState<Issue | null>(null);
+
     const sensors = useSensors(
-        useSensor(PointerSensor, {
-            activationConstraint: { distance: 8 },
-        })
+        useSensor(PointerSensor, { activationConstraint: { distance: 8 } })
     );
 
-    // Group issues by status
     const issuesByStatus = useCallback(() => {
-        return ALL_STATUSES.reduce(
-            (acc, status) => {
-                acc[status] = issues.filter((i) => i.status === status).sort((a, b) => a.position - b.position);
-                return acc;
-            },
-            {} as Record<IssueStatus, Issue[]>
-        );
+        return ALL_STATUSES.reduce((acc, status) => {
+            acc[status] = issues
+                .filter((i) => i.status === status)
+                .sort((a, b) => a.position - b.position);
+            return acc;
+        }, {} as Record<IssueStatus, Issue[]>);
     }, [issues]);
 
     function handleDragStart(event: DragStartEvent) {
@@ -56,14 +50,12 @@ export function Board({ projectId }: { projectId: string }) {
         const activeIssue = issues.find((i) => i.id === active.id);
         if (!activeIssue) return;
 
-        // over.id could be a column status or another issue id
         const overStatus = ALL_STATUSES.includes(over.id as IssueStatus)
             ? (over.id as IssueStatus)
             : issues.find((i) => i.id === over.id)?.status;
 
         if (!overStatus) return;
 
-        // Status changed — update in DB
         if (activeIssue.status !== overStatus) {
             updateIssue({ id: activeIssue.id, status: overStatus });
         }
@@ -71,8 +63,8 @@ export function Board({ projectId }: { projectId: string }) {
 
     if (isPending) {
         return (
-            <div className="flex h-64 items-center justify-center">
-                <p className="text-muted-foreground text-sm">Loading board...</p>
+            <div className="flex items-center justify-center h-64">
+                <p className="text-sm text-muted-foreground">Loading board...</p>
             </div>
         );
     }
@@ -80,21 +72,38 @@ export function Board({ projectId }: { projectId: string }) {
     const grouped = issuesByStatus();
 
     return (
-        <DndContext sensors={sensors} onDragStart={handleDragStart} onDragEnd={handleDragEnd}>
-            <div className="flex h-full gap-4 overflow-x-auto px-6 pb-4">
-                {ALL_STATUSES.map((status) => (
-                    <BoardColumn key={status} status={status} issues={grouped[status]} projectId={projectId} />
-                ))}
-            </div>
+        <>
+            <DndContext
+                sensors={sensors}
+                onDragStart={handleDragStart}
+                onDragEnd={handleDragEnd}
+            >
+                <div className="flex gap-4 overflow-x-auto pb-4 px-6 h-full">
+                    {ALL_STATUSES.map((status) => (
+                        <BoardColumn
+                            key={status}
+                            status={status}
+                            issues={grouped[status]}
+                            projectId={projectId}
+                            onIssueClick={setSelectedIssue}
+                        />
+                    ))}
+                </div>
 
-            {/* Ghost card shown while dragging */}
-            <DragOverlay>
-                {activeIssue ? (
-                    <div className="rotate-2 opacity-90">
-                        <IssueCard issue={activeIssue} />
-                    </div>
-                ) : null}
-            </DragOverlay>
-        </DndContext>
+                <DragOverlay>
+                    {activeIssue ? (
+                        <div className="rotate-2 opacity-90">
+                            <IssueCard issue={activeIssue} />
+                        </div>
+                    ) : null}
+                </DragOverlay>
+            </DndContext>
+
+            {/* Issue detail panel */}
+            <IssuePanel
+                issue={selectedIssue}
+                onClose={() => setSelectedIssue(null)}
+            />
+        </>
     );
 }
