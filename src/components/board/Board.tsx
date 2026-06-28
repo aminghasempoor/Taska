@@ -2,9 +2,13 @@
 
 import { useState, useCallback } from "react";
 import {
-    DndContext, DragOverlay, PointerSensor,
-    useSensor, useSensors,
-    type DragEndEvent, type DragStartEvent,
+    DndContext,
+    DragOverlay,
+    PointerSensor,
+    useSensor,
+    useSensors,
+    type DragEndEvent,
+    type DragStartEvent,
 } from "@dnd-kit/core";
 import { arrayMove } from "@dnd-kit/sortable";
 import { BoardColumn } from "./BoardColumn";
@@ -19,22 +23,21 @@ export function Board({ projectId }: { projectId: string }) {
     useRealtimeBoard(projectId);
 
     const { data: issues = [], isPending } = useIssues(projectId);
-    const { mutate: updateIssue }          = useUpdateIssue();
+    const { mutate: updateIssue } = useUpdateIssue();
 
-    const [activeIssue,   setActiveIssue]   = useState<Issue | null>(null);
+    const [activeIssue, setActiveIssue] = useState<Issue | null>(null);
     const [selectedIssue, setSelectedIssue] = useState<Issue | null>(null);
 
-    const sensors = useSensors(
-        useSensor(PointerSensor, { activationConstraint: { distance: 8 } })
-    );
+    const sensors = useSensors(useSensor(PointerSensor, { activationConstraint: { distance: 8 } }));
 
     const issuesByStatus = useCallback(() => {
-        return ALL_STATUSES.reduce((acc, status) => {
-            acc[status] = issues
-                .filter((i) => i.status === status)
-                .sort((a, b) => a.position - b.position);
-            return acc;
-        }, {} as Record<IssueStatus, Issue[]>);
+        return ALL_STATUSES.reduce(
+            (acc, status) => {
+                acc[status] = issues.filter((i) => i.status === status).sort((a, b) => a.position - b.position);
+                return acc;
+            },
+            {} as Record<IssueStatus, Issue[]>
+        );
     }, [issues]);
 
     function handleDragStart(event: DragStartEvent) {
@@ -63,8 +66,8 @@ export function Board({ projectId }: { projectId: string }) {
 
     if (isPending) {
         return (
-            <div className="flex items-center justify-center h-64">
-                <p className="text-sm text-muted-foreground">Loading board...</p>
+            <div className="flex h-64 items-center justify-center">
+                <p className="text-muted-foreground text-sm">Loading board...</p>
             </div>
         );
     }
@@ -73,12 +76,8 @@ export function Board({ projectId }: { projectId: string }) {
 
     return (
         <>
-            <DndContext
-                sensors={sensors}
-                onDragStart={handleDragStart}
-                onDragEnd={handleDragEnd}
-            >
-                <div className="flex gap-4 overflow-x-auto pb-4 px-6 h-full">
+            <DndContext sensors={sensors} onDragStart={handleDragStart} onDragEnd={handleDragEnd}>
+                <div className="flex h-full gap-4 overflow-x-auto px-6 pb-4">
                     {ALL_STATUSES.map((status) => (
                         <BoardColumn
                             key={status}
@@ -100,10 +99,7 @@ export function Board({ projectId }: { projectId: string }) {
             </DndContext>
 
             {/* Issue detail panel */}
-            <IssuePanel
-                issue={selectedIssue}
-                onClose={() => setSelectedIssue(null)}
-            />
+            <IssuePanel issue={selectedIssue} onClose={() => setSelectedIssue(null)} />
         </>
     );
 }

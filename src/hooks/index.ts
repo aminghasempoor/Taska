@@ -113,9 +113,7 @@ export function useDeleteIssue(projectId: string) {
 }
 
 export function useComments(issueId: string) {
-    return useQuery(
-        orpc.comment.byIssue.queryOptions({ input: { issueId } })
-    );
+    return useQuery(orpc.comment.byIssue.queryOptions({ input: { issueId } }));
 }
 
 export function useCreateComment() {
@@ -123,9 +121,7 @@ export function useCreateComment() {
     return useMutation({
         ...orpc.comment.create.mutationOptions(),
         onSuccess: (_, variables) => {
-            queryClient.invalidateQueries(
-                orpc.comment.byIssue.queryOptions({ input: { issueId: variables.issueId } })
-            );
+            queryClient.invalidateQueries(orpc.comment.byIssue.queryOptions({ input: { issueId: variables.issueId } }));
         },
     });
 }
@@ -135,9 +131,7 @@ export function useDeleteComment(issueId: string) {
     return useMutation({
         ...orpc.comment.delete.mutationOptions(),
         onSuccess: () => {
-            queryClient.invalidateQueries(
-                orpc.comment.byIssue.queryOptions({ input: { issueId } })
-            );
+            queryClient.invalidateQueries(orpc.comment.byIssue.queryOptions({ input: { issueId } }));
         },
     });
 }

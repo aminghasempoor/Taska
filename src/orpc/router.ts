@@ -151,15 +151,13 @@ export const router = {
             return comment;
         }),
 
-        byIssue: protectedProcedure
-            .input(z.object({ issueId: z.string().uuid() }))
-            .handler(async ({ input }) => {
-                return await db
-                    .select()
-                    .from(comments)
-                    .where(eq(comments.issueId, input.issueId))
-                    .orderBy(asc(comments.createdAt));
-            }),
+        byIssue: protectedProcedure.input(z.object({ issueId: z.string().uuid() })).handler(async ({ input }) => {
+            return await db
+                .select()
+                .from(comments)
+                .where(eq(comments.issueId, input.issueId))
+                .orderBy(asc(comments.createdAt));
+        }),
 
         delete: protectedProcedure.input(deleteCommentSchema).handler(async ({ input, context }) => {
             await db.delete(comments).where(

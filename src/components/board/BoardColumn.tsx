@@ -12,7 +12,7 @@ export function BoardColumn({
     status,
     issues,
     projectId,
-                                onIssueClick
+    onIssueClick,
 }: {
     status: IssueStatus;
     issues: Issue[];
@@ -46,7 +46,7 @@ export function BoardColumn({
                             <IssueCard
                                 key={issue.id}
                                 issue={issue}
-                                onClick={() => onIssueClick(issue)}  // ← add this
+                                onClick={() => onIssueClick(issue)} // ← add this
                             />
                         ))}
                     </AnimatePresence>

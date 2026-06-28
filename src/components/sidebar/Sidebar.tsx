@@ -14,61 +14,45 @@ import {
     DropdownMenuSeparator,
     DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import {
-    FolderKanban, Plus, Settings,
-    LogOut, ChevronsUpDown, Layout,
-} from "lucide-react";
+import { FolderKanban, Plus, Settings, LogOut, ChevronsUpDown, Layout } from "lucide-react";
 
 export function Sidebar() {
-    const router   = useRouter();
-    const params   = useParams<{ workspace: string; projectId: string }>();
+    const router = useRouter();
+    const params = useParams<{ workspace: string; projectId: string }>();
 
-    const { user }              = useUser();
-    const { signOut }           = useClerk();
-    const { data: workspaces }  = useWorkspaces();
-    const currentWorkspace      = workspaces?.find((w) => w.slug === params.workspace);
-    const { data: projects }    = useProjects(currentWorkspace?.id ?? "");
+    const { user } = useUser();
+    const { signOut } = useClerk();
+    const { data: workspaces } = useWorkspaces();
+    const currentWorkspace = workspaces?.find((w) => w.slug === params.workspace);
+    const { data: projects } = useProjects(currentWorkspace?.id ?? "");
 
     return (
-        <aside className="w-56 shrink-0 border-r flex flex-col h-screen bg-background">
-
+        <aside className="bg-background flex h-screen w-56 shrink-0 flex-col border-r">
             {/* Workspace switcher */}
-            <div className="p-3 border-b">
+            <div className="border-b p-3">
                 <DropdownMenu>
                     <DropdownMenuTrigger asChild>
-                        <Button
-                            variant="ghost"
-                            className="w-full justify-between px-2 h-9 font-medium"
-                        >
+                        <Button variant="ghost" className="h-9 w-full justify-between px-2 font-medium">
                             <div className="flex items-center gap-2 truncate">
-                                <div className="h-5 w-5 rounded bg-primary/10 flex items-center justify-center shrink-0">
-                                    <Layout className="h-3 w-3 text-primary" />
+                                <div className="bg-primary/10 flex h-5 w-5 shrink-0 items-center justify-center rounded">
+                                    <Layout className="text-primary h-3 w-3" />
                                 </div>
-                                <span className="truncate text-sm">
-                  {currentWorkspace?.name ?? "Select workspace"}
-                </span>
+                                <span className="truncate text-sm">{currentWorkspace?.name ?? "Select workspace"}</span>
                             </div>
-                            <ChevronsUpDown className="h-3.5 w-3.5 text-muted-foreground shrink-0" />
+                            <ChevronsUpDown className="text-muted-foreground h-3.5 w-3.5 shrink-0" />
                         </Button>
                     </DropdownMenuTrigger>
                     <DropdownMenuContent align="start" className="w-52">
                         {workspaces?.map((ws) => (
-                            <DropdownMenuItem
-                                key={ws.id}
-                                onClick={() => router.push(`/${ws.slug}`)}
-                                className="gap-2"
-                            >
-                                <div className="h-5 w-5 rounded bg-primary/10 flex items-center justify-center">
-                                    <Layout className="h-3 w-3 text-primary" />
+                            <DropdownMenuItem key={ws.id} onClick={() => router.push(`/${ws.slug}`)} className="gap-2">
+                                <div className="bg-primary/10 flex h-5 w-5 items-center justify-center rounded">
+                                    <Layout className="text-primary h-3 w-3" />
                                 </div>
                                 {ws.name}
                             </DropdownMenuItem>
                         ))}
                         <DropdownMenuSeparator />
-                        <DropdownMenuItem
-                            onClick={() => router.push("/onboarding")}
-                            className="gap-2"
-                        >
+                        <DropdownMenuItem onClick={() => router.push("/onboarding")} className="gap-2">
                             <Plus className="h-4 w-4" />
                             New workspace
                         </DropdownMenuItem>
@@ -78,10 +62,8 @@ export function Sidebar() {
 
             {/* Projects list */}
             <div className="flex-1 overflow-y-auto p-3">
-                <div className="flex items-center justify-between mb-1 px-1">
-          <span className="text-xs font-medium text-muted-foreground uppercase tracking-wider">
-            Projects
-          </span>
+                <div className="mb-1 flex items-center justify-between px-1">
+                    <span className="text-muted-foreground text-xs font-medium tracking-wider uppercase">Projects</span>
                     <Button
                         variant="ghost"
                         size="icon"
@@ -105,20 +87,17 @@ export function Sidebar() {
                             >
                                 <Link href={`/${params.workspace}/${project.id}`}>
                                     <div
-                                        className={`
-                      flex items-center gap-2.5 px-2 py-1.5 rounded-md text-sm
-                      transition-colors cursor-pointer
-                      ${isActive
-                                            ? "bg-accent text-accent-foreground font-medium"
-                                            : "text-muted-foreground hover:text-foreground hover:bg-accent/50"
-                                        }
-                    `}
+                                        className={`flex cursor-pointer items-center gap-2.5 rounded-md px-2 py-1.5 text-sm transition-colors ${
+                                            isActive
+                                                ? "bg-accent text-accent-foreground font-medium"
+                                                : "text-muted-foreground hover:text-foreground hover:bg-accent/50"
+                                        } `}
                                     >
                                         <FolderKanban className="h-3.5 w-3.5 shrink-0" />
                                         <span className="truncate">{project.name}</span>
-                                        <span className="ml-auto text-xs text-muted-foreground">
-                      {project.identifier}
-                    </span>
+                                        <span className="text-muted-foreground ml-auto text-xs">
+                                            {project.identifier}
+                                        </span>
                                     </div>
                                 </Link>
                             </motion.div>
@@ -126,38 +105,25 @@ export function Sidebar() {
                     })}
                 </AnimatePresence>
 
-                {projects?.length === 0 && (
-                    <p className="text-xs text-muted-foreground px-2 py-2">
-                        No projects yet
-                    </p>
-                )}
+                {projects?.length === 0 && <p className="text-muted-foreground px-2 py-2 text-xs">No projects yet</p>}
             </div>
 
             {/* User menu */}
-            <div className="p-3 border-t">
+            <div className="border-t p-3">
                 <DropdownMenu>
                     <DropdownMenuTrigger asChild>
-                        <Button
-                            variant="ghost"
-                            className="w-full justify-start gap-2 px-2 h-9"
-                        >
+                        <Button variant="ghost" className="h-9 w-full justify-start gap-2 px-2">
                             <Avatar className="h-6 w-6">
                                 <AvatarImage src={user?.imageUrl} />
-                                <AvatarFallback className="text-xs">
-                                    {user?.firstName?.[0]}
-                                </AvatarFallback>
+                                <AvatarFallback className="text-xs">{user?.firstName?.[0]}</AvatarFallback>
                             </Avatar>
-                            <span className="text-sm truncate">
-                {user?.fullName ?? user?.firstName}
-              </span>
+                            <span className="truncate text-sm">{user?.fullName ?? user?.firstName}</span>
                         </Button>
                     </DropdownMenuTrigger>
                     <DropdownMenuContent align="end" side="top" className="w-52">
                         <div className="px-2 py-1.5">
-                            <p className="text-sm font-medium">
-                                {user?.fullName ?? user?.firstName}
-                            </p>
-                            <p className="text-xs text-muted-foreground truncate">
+                            <p className="text-sm font-medium">{user?.fullName ?? user?.firstName}</p>
+                            <p className="text-muted-foreground truncate text-xs">
                                 {user?.emailAddresses[0].emailAddress}
                             </p>
                         </div>
@@ -168,7 +134,7 @@ export function Sidebar() {
                         </DropdownMenuItem>
                         <DropdownMenuSeparator />
                         <DropdownMenuItem
-                            className="gap-2 text-destructive focus:text-destructive"
+                            className="text-destructive focus:text-destructive gap-2"
                             onClick={() => signOut(() => router.push("/"))}
                         >
                             <LogOut className="h-4 w-4" />

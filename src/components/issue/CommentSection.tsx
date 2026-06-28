@@ -10,17 +10,14 @@ import { formatDistanceToNow } from "date-fns";
 import { motion, AnimatePresence } from "framer-motion";
 
 export function CommentSection({ issueId }: { issueId: string }) {
-    const { user }                                   = useUser();
-    const { data: comments = [], isPending }         = useComments(issueId);
+    const { user } = useUser();
+    const { data: comments = [], isPending } = useComments(issueId);
     const { mutate: createComment, isPending: isSending } = useCreateComment();
-    const [body, setBody]                            = useState("");
+    const [body, setBody] = useState("");
 
     function handleSubmit() {
         if (!body.trim()) return;
-        createComment(
-            { body, issueId },
-            { onSuccess: () => setBody("") }
-        );
+        createComment({ body, issueId }, { onSuccess: () => setBody("") });
     }
 
     return (
@@ -29,11 +26,11 @@ export function CommentSection({ issueId }: { issueId: string }) {
 
             {/* Comment list */}
             {isPending ? (
-                <p className="text-xs text-muted-foreground">Loading...</p>
+                <p className="text-muted-foreground text-xs">Loading...</p>
             ) : (
                 <AnimatePresence>
                     {comments.length === 0 ? (
-                        <p className="text-xs text-muted-foreground">No comments yet.</p>
+                        <p className="text-muted-foreground text-xs">No comments yet.</p>
                     ) : (
                         comments.map((comment) => (
                             <motion.div
@@ -45,20 +42,16 @@ export function CommentSection({ issueId }: { issueId: string }) {
                             >
                                 <Avatar className="h-7 w-7 shrink-0">
                                     <AvatarImage src={user?.imageUrl} />
-                                    <AvatarFallback className="text-xs">
-                                        {user?.firstName?.[0]}
-                                    </AvatarFallback>
+                                    <AvatarFallback className="text-xs">{user?.firstName?.[0]}</AvatarFallback>
                                 </Avatar>
-                                <div className="flex flex-col gap-1 flex-1">
+                                <div className="flex flex-1 flex-col gap-1">
                                     <div className="flex items-center gap-2">
-                    <span className="text-xs font-medium">
-                      {user?.fullName ?? user?.firstName}
-                    </span>
-                                        <span className="text-xs text-muted-foreground">
-                      {formatDistanceToNow(new Date(comment.createdAt), {
-                          addSuffix: true,
-                      })}
-                    </span>
+                                        <span className="text-xs font-medium">{user?.fullName ?? user?.firstName}</span>
+                                        <span className="text-muted-foreground text-xs">
+                                            {formatDistanceToNow(new Date(comment.createdAt), {
+                                                addSuffix: true,
+                                            })}
+                                        </span>
                                     </div>
                                     <p className="text-sm">{comment.body}</p>
                                 </div>
@@ -72,11 +65,9 @@ export function CommentSection({ issueId }: { issueId: string }) {
             <div className="flex gap-3 pt-2">
                 <Avatar className="h-7 w-7 shrink-0">
                     <AvatarImage src={user?.imageUrl} />
-                    <AvatarFallback className="text-xs">
-                        {user?.firstName?.[0]}
-                    </AvatarFallback>
+                    <AvatarFallback className="text-xs">{user?.firstName?.[0]}</AvatarFallback>
                 </Avatar>
-                <div className="flex flex-col gap-2 flex-1">
+                <div className="flex flex-1 flex-col gap-2">
                     <Textarea
                         placeholder="Add a comment..."
                         value={body}
@@ -86,12 +77,7 @@ export function CommentSection({ issueId }: { issueId: string }) {
                             if (e.key === "Enter" && (e.metaKey || e.ctrlKey)) handleSubmit();
                         }}
                     />
-                    <Button
-                        size="sm"
-                        className="self-end"
-                        onClick={handleSubmit}
-                        disabled={isSending || !body.trim()}
-                    >
+                    <Button size="sm" className="self-end" onClick={handleSubmit} disabled={isSending || !body.trim()}>
                         {isSending ? "Posting..." : "Comment"}
                     </Button>
                 </div>
