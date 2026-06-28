@@ -152,7 +152,7 @@ export const router = {
         }),
 
         byIssue: protectedProcedure
-            .input(deleteCommentSchema.pick({ id: true }).extend({ issueId: z.string().uuid() }))
+            .input(z.object({ issueId: z.string().uuid() }))
             .handler(async ({ input }) => {
                 return await db
                     .select()

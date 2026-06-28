@@ -130,13 +130,13 @@ export function useCreateComment() {
     });
 }
 
-export function useDeleteComment() {
+export function useDeleteComment(issueId: string) {
     const queryClient = useQueryClient();
     return useMutation({
         ...orpc.comment.delete.mutationOptions(),
-        onSuccess: (_, variables, context: any) => {
+        onSuccess: () => {
             queryClient.invalidateQueries(
-                orpc.comment.byIssue.queryOptions({ input: { issueId: context.issueId } })
+                orpc.comment.byIssue.queryOptions({ input: { issueId } })
             );
         },
     });
