@@ -14,8 +14,8 @@ import {
     DropdownMenuSeparator,
     DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { FolderKanban, Plus, Settings, LogOut, ChevronsUpDown, Layout  } from "lucide-react";
-import {CopyInviteLink} from "@/components/sidebar/CopyInviteLink";
+import { FolderKanban, Plus, Settings, LogOut, ChevronsUpDown, Layout } from "lucide-react";
+import { CopyInviteLink } from "@/components/sidebar/CopyInviteLink";
 
 export function Sidebar() {
     const router = useRouter();
@@ -110,7 +110,7 @@ export function Sidebar() {
             </div>
 
             {currentWorkspace && (
-                <div className="px-1 mt-2">
+                <div className="mt-2 px-1">
                     <CopyInviteLink slug={currentWorkspace.slug} />
                 </div>
             )}

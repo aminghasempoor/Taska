@@ -87,48 +87,35 @@ export const router = {
             return workspace ?? null;
         }),
 
-        join: protectedProcedure
-            .input(z.object({ slug: z.string() }))
-            .handler(async ({ input, context }) => {
-                const [workspace] = await db
-                    .select()
-                    .from(workspaces)
-                    .where(eq(workspaces.slug, input.slug))
-                    .limit(1);
+        join: protectedProcedure.input(z.object({ slug: z.string() })).handler(async ({ input, context }) => {
+            const [workspace] = await db.select().from(workspaces).where(eq(workspaces.slug, input.slug)).limit(1);
 
-                if (!workspace) throw new Error("Workspace not found");
+            if (!workspace) throw new Error("Workspace not found");
 
-                // Make sure user exists in our DB
-                // (they might have signed in but never gone through onboarding)
-                const existingUser = await db
-                    .select()
-                    .from(users)
-                    .where(eq(users.id, context.user!.id))
-                    .limit(1);
+            // Make sure user exists in our DB
+            // (they might have signed in but never gone through onboarding)
+            const existingUser = await db.select().from(users).where(eq(users.id, context.user!.id)).limit(1);
 
-                if (existingUser.length === 0) throw new Error("User not synced");
+            if (existingUser.length === 0) throw new Error("User not synced");
 
-                const existing = await db
-                    .select()
-                    .from(workspaceMembers)
-                    .where(
-                        and(
-                            eq(workspaceMembers.workspaceId, workspace.id),
-                            eq(workspaceMembers.userId, context.user!.id)
-                        )
-                    )
-                    .limit(1);
+            const existing = await db
+                .select()
+                .from(workspaceMembers)
+                .where(
+                    and(eq(workspaceMembers.workspaceId, workspace.id), eq(workspaceMembers.userId, context.user!.id))
+                )
+                .limit(1);
 
-                if (existing.length > 0) return workspace;
+            if (existing.length > 0) return workspace;
 
-                await db.insert(workspaceMembers).values({
-                    workspaceId: workspace.id,
-                    userId:      context.user!.id,
-                    role:        "member",
-                });
+            await db.insert(workspaceMembers).values({
+                workspaceId: workspace.id,
+                userId: context.user!.id,
+                role: "member",
+            });
 
-                return workspace;
-            }),
+            return workspace;
+        }),
     },
 
     // ─── Project ─────────────────────────────────────────────────────────────

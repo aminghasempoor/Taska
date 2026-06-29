@@ -6,15 +6,15 @@ import { useMutation } from "@tanstack/react-query";
 import { client } from "@/orpc/client";
 import { motion } from "framer-motion";
 
-export default function JoinPage({
-                                     params,
-                                 }: {
-    params: Promise<{ slug: string }>;
-}) {
+export default function JoinPage({ params }: { params: Promise<{ slug: string }> }) {
     const { slug } = use(params);
-    const router   = useRouter();
+    const router = useRouter();
 
-    const { mutate: join, isPending, isError } = useMutation({
+    const {
+        mutate: join,
+        isPending,
+        isError,
+    } = useMutation({
         mutationFn: () => client.workspace.join({ slug }),
         onSuccess: (workspace) => {
             router.push(`/${workspace.slug}`);
@@ -27,7 +27,7 @@ export default function JoinPage({
     }, []);
 
     return (
-        <div className="min-h-screen flex items-center justify-center">
+        <div className="flex min-h-screen items-center justify-center">
             <motion.div
                 initial={{ opacity: 0, y: 16 }}
                 animate={{ opacity: 1, y: 0 }}
@@ -35,18 +35,13 @@ export default function JoinPage({
             >
                 {isError ? (
                     <>
-                        <p className="text-destructive font-medium">
-                            Invalid invite link.
-                        </p>
-                        <p className="text-sm text-muted-foreground">
-                            Ask your team for a new one.
-                        </p>
+                        <p className="text-destructive font-medium">Invalid invite link.</p>
+                        <p className="text-muted-foreground text-sm">Ask your team for a new one.</p>
                     </>
                 ) : (
                     <>
-                        <div className="h-8 w-8 border-2 border-primary border-t-transparent
-                            rounded-full animate-spin" />
-                        <p className="text-sm text-muted-foreground">
+                        <div className="border-primary h-8 w-8 animate-spin rounded-full border-2 border-t-transparent" />
+                        <p className="text-muted-foreground text-sm">
                             {isPending ? "Joining workspace..." : "Redirecting..."}
                         </p>
                     </>

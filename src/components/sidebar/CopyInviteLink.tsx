@@ -18,8 +18,7 @@ export function CopyInviteLink({ slug }: { slug: string }) {
         <Button
             variant="ghost"
             size="sm"
-            className="w-full justify-start gap-2 text-xs text-muted-foreground
-                 hover:text-foreground h-7 px-2"
+            className="text-muted-foreground hover:text-foreground h-7 w-full justify-start gap-2 px-2 text-xs"
             onClick={handleCopy}
         >
             {copied ? (
