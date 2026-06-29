@@ -1,52 +1,36 @@
 "use client";
 
-import {useEffect, useState} from "react";
+import { useEffect, useState } from "react";
 import { useCreateIssue } from "@/hooks";
 import { useGenerateDescription, useSuggestPriority } from "@/hooks/useAI";
-import {
-    Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger,
-} from "@/components/ui/dialog";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
-import {
-    Select, SelectContent, SelectItem,
-    SelectTrigger, SelectValue,
-} from "@/components/ui/select";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Plus, Sparkles, Loader2 } from "lucide-react";
-import {
-    STATUS_CONFIG, PRIORITY_CONFIG, ALL_STATUSES,
-    type IssueStatus, type IssuePriority,
-} from "@/lib/config";
+import { STATUS_CONFIG, PRIORITY_CONFIG, ALL_STATUSES, type IssueStatus, type IssuePriority } from "@/lib/config";
 
 export function CreateIssueDialog({
-                                      projectId,
-                                      projectName,
-                                      defaultStatus,
-                                  }: {
-    projectId:    string;
-    projectName:  string;
+    projectId,
+    projectName,
+    defaultStatus,
+}: {
+    projectId: string;
+    projectName: string;
     defaultStatus?: IssueStatus;
 }) {
-    const [open, setOpen]         = useState(false);
-    const [title, setTitle]       = useState("");
-    const [description, setDesc]  = useState("");
-    const [status, setStatus]     = useState<IssueStatus>(defaultStatus ?? "backlog");
+    const [open, setOpen] = useState(false);
+    const [title, setTitle] = useState("");
+    const [description, setDesc] = useState("");
+    const [status, setStatus] = useState<IssueStatus>(defaultStatus ?? "backlog");
     const [priority, setPriority] = useState<IssuePriority>("none");
 
     const { mutate: createIssue, isPending } = useCreateIssue();
 
-    const {
-        generate,
-        completion,
-        isLoading: isGenerating,
-    } = useGenerateDescription();
+    const { generate, completion, isLoading: isGenerating } = useGenerateDescription();
 
-    const {
-        suggest,
-        suggestion,
-        isLoading: isSuggesting,
-    } = useSuggestPriority();
+    const { suggest, suggestion, isLoading: isSuggesting } = useSuggestPriority();
 
     // Sync streaming completion into description field
     const displayDescription = isGenerating ? completion : description;
@@ -112,14 +96,11 @@ export function CreateIssueDialog({
                     {/* Description with AI generate button */}
                     <div className="flex flex-col gap-1.5">
                         <div className="flex items-center justify-between">
-                            <label className="text-xs font-medium text-muted-foreground">
-                                Description
-                            </label>
+                            <label className="text-muted-foreground text-xs font-medium">Description</label>
                             <Button
                                 variant="ghost"
                                 size="sm"
-                                className="h-6 text-xs gap-1.5 text-purple-600 hover:text-purple-700
-                           hover:bg-purple-50"
+                                className="h-6 gap-1.5 text-xs text-purple-600 hover:bg-purple-50 hover:text-purple-700"
                                 onClick={handleGenerateDescription}
                                 disabled={!title.trim() || isGenerating}
                             >
@@ -142,17 +123,14 @@ export function CreateIssueDialog({
 
                     {/* Status + Priority */}
                     <div className="flex gap-2">
-                        <Select
-                            value={status}
-                            onValueChange={(v) => setStatus(v as IssueStatus)}
-                        >
+                        <Select value={status} onValueChange={(v) => setStatus(v as IssueStatus)}>
                             <SelectTrigger className="flex-1">
                                 <SelectValue />
                             </SelectTrigger>
                             <SelectContent>
                                 {ALL_STATUSES.map((s) => {
                                     const config = STATUS_CONFIG[s];
-                                    const Icon   = config.icon;
+                                    const Icon = config.icon;
                                     return (
                                         <SelectItem key={s} value={s}>
                                             <div className="flex items-center gap-2">
@@ -165,11 +143,8 @@ export function CreateIssueDialog({
                             </SelectContent>
                         </Select>
 
-                        <div className="flex flex-col gap-1 flex-1">
-                            <Select
-                                value={priority}
-                                onValueChange={(v) => setPriority(v as IssuePriority)}
-                            >
+                        <div className="flex flex-1 flex-col gap-1">
+                            <Select value={priority} onValueChange={(v) => setPriority(v as IssuePriority)}>
                                 <SelectTrigger className="w-full">
                                     <SelectValue />
                                 </SelectTrigger>
@@ -192,8 +167,7 @@ export function CreateIssueDialog({
                             <button
                                 onClick={handleSuggestPriority}
                                 disabled={!title.trim() || isSuggesting}
-                                className="text-xs text-purple-600 hover:text-purple-700
-                           flex items-center gap-1 disabled:opacity-40"
+                                className="flex items-center gap-1 text-xs text-purple-600 hover:text-purple-700 disabled:opacity-40"
                             >
                                 {isSuggesting ? (
                                     <Loader2 className="h-3 w-3 animate-spin" />
@@ -205,18 +179,16 @@ export function CreateIssueDialog({
 
                             {/* Show reason */}
                             {suggestion && !isSuggesting && (
-                                <p className="text-xs text-muted-foreground leading-tight">
-                                    {suggestion.priority}<br />
+                                <p className="text-muted-foreground text-xs leading-tight">
+                                    {suggestion.priority}
+                                    <br />
                                     {suggestion.reason}
                                 </p>
                             )}
                         </div>
                     </div>
 
-                    <Button
-                        onClick={handleCreate}
-                        disabled={isPending || !title.trim()}
-                    >
+                    <Button onClick={handleCreate} disabled={isPending || !title.trim()}>
                         {isPending ? "Creating..." : "Create issue"}
                     </Button>
                 </div>

@@ -18,7 +18,7 @@ import { useRealtimeBoard } from "@/hooks/useRealtimeBoard";
 import { ALL_STATUSES, type IssueStatus } from "@/lib/config";
 import type { Issue } from "@/db/schema";
 
-export function Board({ projectId, projectName, }: { projectId: string, projectName: string; }) {
+export function Board({ projectId, projectName }: { projectId: string; projectName: string }) {
     useRealtimeBoard(projectId);
 
     const { data: issues = [], isPending } = useIssues(projectId);

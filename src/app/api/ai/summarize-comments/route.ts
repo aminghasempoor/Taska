@@ -11,18 +11,13 @@ export async function POST(req: Request) {
 
     const { issueId } = await req.json();
 
-    const issueComments = await db
-        .select()
-        .from(comments)
-        .where(eq(comments.issueId, issueId));
+    const issueComments = await db.select().from(comments).where(eq(comments.issueId, issueId));
 
     if (issueComments.length === 0) {
         return Response.json({ summary: "No comments to summarize." });
     }
 
-    const commentText = issueComments
-        .map((c, i) => `Comment ${i + 1}: ${c.body}`)
-        .join("\n");
+    const commentText = issueComments.map((c, i) => `Comment ${i + 1}: ${c.body}`).join("\n");
 
     try {
         const { text } = await generateText({

@@ -1,13 +1,13 @@
 "use client";
 
 import { useCompletion } from "@ai-sdk/react";
-import {useState} from "react";
+import { useState } from "react";
 
 // ── Generate description (streaming) ──────────────────────────────
 
 export function useGenerateDescription() {
     const [completion, setCompletion] = useState("");
-    const [isLoading, setIsLoading]   = useState(false);
+    const [isLoading, setIsLoading] = useState(false);
 
     async function generate(title: string, projectName: string) {
         setIsLoading(true);
@@ -15,12 +15,12 @@ export function useGenerateDescription() {
 
         try {
             const res = await fetch("/api/ai/generate-description", {
-                method:  "POST",
+                method: "POST",
                 headers: { "Content-Type": "application/json" },
-                body:    JSON.stringify({ title, projectName }),
+                body: JSON.stringify({ title, projectName }),
             });
 
-            const reader  = res.body!.getReader();
+            const reader = res.body!.getReader();
             const decoder = new TextDecoder();
 
             while (true) {
@@ -40,16 +40,16 @@ export function useGenerateDescription() {
 // ── Summarize comments ────────────────────────────────────────────
 
 export function useSummarizeComments() {
-    const [summary,   setSummary]   = useState("");
+    const [summary, setSummary] = useState("");
     const [isLoading, setIsLoading] = useState(false);
 
     async function summarize(issueId: string) {
         setIsLoading(true);
         try {
             const res = await fetch("/api/ai/summarize-comments", {
-                method:  "POST",
+                method: "POST",
                 headers: { "Content-Type": "application/json" },
-                body:    JSON.stringify({ issueId }),
+                body: JSON.stringify({ issueId }),
             });
 
             if (!res.ok) {
@@ -81,10 +81,10 @@ export function useSuggestPriority() {
     async function suggest(title: string, description: string) {
         setIsLoading(true);
         try {
-            const res  = await fetch("/api/ai/suggest-priority", {
-                method:  "POST",
+            const res = await fetch("/api/ai/suggest-priority", {
+                method: "POST",
                 headers: { "Content-Type": "application/json" },
-                body:    JSON.stringify({ title, description }),
+                body: JSON.stringify({ title, description }),
             });
             const data = await res.json();
             setSuggestion(data);

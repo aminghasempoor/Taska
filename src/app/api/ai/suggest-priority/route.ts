@@ -29,7 +29,7 @@ export async function POST(req: Request) {
 
     try {
         // Strip markdown code blocks if model wraps in ```json
-        const clean  = text.replace(/```json|```/g, "").trim();
+        const clean = text.replace(/```json|```/g, "").trim();
         const parsed = JSON.parse(clean);
         return Response.json(parsed);
     } catch {
