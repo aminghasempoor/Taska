@@ -96,8 +96,20 @@ export const comments = pgTable("comments", {
     updatedAt: timestamp("updated_at").notNull().defaultNow(),
 });
 
+// ─── project member ──────────────────────────────────────────────────────────────
+
+export const projectMembers = pgTable("project_members", {
+    id:          uuid("id").primaryKey().defaultRandom(),
+    projectId:   uuid("project_id").notNull().references(() => projects.id, { onDelete: "cascade" }),
+    userId:      uuid("user_id").notNull().references(() => users.id, { onDelete: "cascade" }),
+    joinedAt:    timestamp("joined_at").notNull().defaultNow(),
+});
+
+
 // ─── Inferred Types ────────────────────────────────────────────────────────
 
+export type ProjectMember    = typeof projectMembers.$inferSelect;
+export type NewProjectMember = typeof projectMembers.$inferInsert;
 export type User = typeof users.$inferSelect;
 export type NewUser = typeof users.$inferInsert;
 export type Workspace = typeof workspaces.$inferSelect;

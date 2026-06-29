@@ -1,5 +1,5 @@
 import { db } from "@/db";
-import { users, workspaces, workspaceMembers, projects, issues, comments } from "@/db/schema";
+import { users, workspaces, workspaceMembers, projects, issues, comments, projectMembers } from "@/db/schema";
 import { eq, and, asc } from "drizzle-orm";
 import {
     syncUserSchema,
@@ -11,6 +11,9 @@ import {
     getIssuesByProjectSchema,
     createCommentSchema,
     deleteCommentSchema,
+    addProjectMemberSchema,
+    removeProjectMemberSchema,
+    getProjectMembersSchema,
 } from "@/validators";
 import { z } from "zod";
 import { clerkProcedure, protectedProcedure } from "./middleware";
@@ -99,6 +102,79 @@ export const router = {
                 .where(eq(projects.workspaceId, input.workspaceId))
                 .orderBy(asc(projects.createdAt));
         }),
+    },
+
+    projectMember: {
+        // Get all members of a project with user details
+        list: protectedProcedure
+            .input(getProjectMembersSchema)
+            .handler(async ({ input }) => {
+                return await db
+                    .select({
+                        id:        projectMembers.id,
+                        joinedAt:  projectMembers.joinedAt,
+                        userId:    users.id,
+                        name:      users.name,
+                        email:     users.email,
+                        avatarUrl: users.avatarUrl,
+                    })
+                    .from(projectMembers)
+                    .innerJoin(users, eq(projectMembers.userId, users.id))
+                    .where(eq(projectMembers.projectId, input.projectId));
+            }),
+
+        // Get workspace members NOT yet in the project
+        // Used to show who you can still add
+        available: protectedProcedure
+            .input(z.object({ projectId: z.string().uuid(), workspaceId: z.string().uuid() }))
+            .handler(async ({ input }) => {
+                // All workspace members
+                const wsmembers = await db
+                    .select({
+                        userId:    users.id,
+                        name:      users.name,
+                        email:     users.email,
+                        avatarUrl: users.avatarUrl,
+                    })
+                    .from(workspaceMembers)
+                    .innerJoin(users, eq(workspaceMembers.userId, users.id))
+                    .where(eq(workspaceMembers.workspaceId, input.workspaceId));
+
+                // Already in project
+                const pmembers = await db
+                    .select({ userId: projectMembers.userId })
+                    .from(projectMembers)
+                    .where(eq(projectMembers.projectId, input.projectId));
+
+                const inProjectIds = new Set(pmembers.map((m) => m.userId));
+
+                // Return only those NOT already in the project
+                return wsmembers.filter((m) => !inProjectIds.has(m.userId));
+            }),
+
+        add: protectedProcedure
+            .input(addProjectMemberSchema)
+            .handler(async ({ input }) => {
+                const [member] = await db
+                    .insert(projectMembers)
+                    .values(input)
+                    .returning();
+                return member;
+            }),
+
+        remove: protectedProcedure
+            .input(removeProjectMemberSchema)
+            .handler(async ({ input }) => {
+                await db
+                    .delete(projectMembers)
+                    .where(
+                        and(
+                            eq(projectMembers.projectId, input.projectId),
+                            eq(projectMembers.userId, input.userId)
+                        )
+                    );
+                return { success: true };
+            }),
     },
 
     // ─── Issue ───────────────────────────────────────────────────────────────

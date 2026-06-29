@@ -13,8 +13,9 @@ import { STATUS_CONFIG, PRIORITY_CONFIG, ALL_STATUSES, type IssueStatus, type Is
 import { X, Trash2 } from "lucide-react";
 import type { Issue } from "@/db/schema";
 import { useSummarizeComments } from "@/hooks/useAI";
+import { AssigneePicker } from "./AssigneePicker";
 
-export function IssuePanel({ issue, onClose }: { issue: Issue | null; onClose: () => void }) {
+export function IssuePanel({ issue, onClose, projectId }: { issue: Issue | null; onClose: () => void, projectId: string;   }) {
     const { summarize, summary, isLoading: isSummarizing, setSummary } = useSummarizeComments();
     const { mutate: updateIssue } = useUpdateIssue();
     const { mutate: deleteIssue } = useDeleteIssue(issue?.projectId ?? "");
@@ -144,6 +145,17 @@ export function IssuePanel({ issue, onClose }: { issue: Issue | null; onClose: (
                                         })}
                                     </SelectContent>
                                 </Select>
+                            </div>
+
+                            <div className="flex flex-col gap-1.5">
+                                <label className="text-xs font-medium text-muted-foreground">
+                                    Assignee
+                                </label>
+                                <AssigneePicker
+                                    projectId={projectId}
+                                    issueId={issue.id}
+                                    assigneeId={issue.assigneeId}
+                                />
                             </div>
 
                             {/* Description */}
