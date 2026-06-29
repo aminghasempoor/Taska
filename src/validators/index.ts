@@ -75,12 +75,12 @@ export const deleteCommentSchema = z.object({
 
 export const addProjectMemberSchema = z.object({
     projectId: z.string().uuid(),
-    userId:    z.string().uuid(),
+    userId: z.string().uuid(),
 });
 
 export const removeProjectMemberSchema = z.object({
     projectId: z.string().uuid(),
-    userId:    z.string().uuid(),
+    userId: z.string().uuid(),
 });
 
 export const getProjectMembersSchema = z.object({

@@ -106,22 +106,20 @@ export const router = {
 
     projectMember: {
         // Get all members of a project with user details
-        list: protectedProcedure
-            .input(getProjectMembersSchema)
-            .handler(async ({ input }) => {
-                return await db
-                    .select({
-                        id:        projectMembers.id,
-                        joinedAt:  projectMembers.joinedAt,
-                        userId:    users.id,
-                        name:      users.name,
-                        email:     users.email,
-                        avatarUrl: users.avatarUrl,
-                    })
-                    .from(projectMembers)
-                    .innerJoin(users, eq(projectMembers.userId, users.id))
-                    .where(eq(projectMembers.projectId, input.projectId));
-            }),
+        list: protectedProcedure.input(getProjectMembersSchema).handler(async ({ input }) => {
+            return await db
+                .select({
+                    id: projectMembers.id,
+                    joinedAt: projectMembers.joinedAt,
+                    userId: users.id,
+                    name: users.name,
+                    email: users.email,
+                    avatarUrl: users.avatarUrl,
+                })
+                .from(projectMembers)
+                .innerJoin(users, eq(projectMembers.userId, users.id))
+                .where(eq(projectMembers.projectId, input.projectId));
+        }),
 
         // Get workspace members NOT yet in the project
         // Used to show who you can still add
@@ -131,9 +129,9 @@ export const router = {
                 // All workspace members
                 const wsmembers = await db
                     .select({
-                        userId:    users.id,
-                        name:      users.name,
-                        email:     users.email,
+                        userId: users.id,
+                        name: users.name,
+                        email: users.email,
                         avatarUrl: users.avatarUrl,
                     })
                     .from(workspaceMembers)
@@ -152,29 +150,17 @@ export const router = {
                 return wsmembers.filter((m) => !inProjectIds.has(m.userId));
             }),
 
-        add: protectedProcedure
-            .input(addProjectMemberSchema)
-            .handler(async ({ input }) => {
-                const [member] = await db
-                    .insert(projectMembers)
-                    .values(input)
-                    .returning();
-                return member;
-            }),
+        add: protectedProcedure.input(addProjectMemberSchema).handler(async ({ input }) => {
+            const [member] = await db.insert(projectMembers).values(input).returning();
+            return member;
+        }),
 
-        remove: protectedProcedure
-            .input(removeProjectMemberSchema)
-            .handler(async ({ input }) => {
-                await db
-                    .delete(projectMembers)
-                    .where(
-                        and(
-                            eq(projectMembers.projectId, input.projectId),
-                            eq(projectMembers.userId, input.userId)
-                        )
-                    );
-                return { success: true };
-            }),
+        remove: protectedProcedure.input(removeProjectMemberSchema).handler(async ({ input }) => {
+            await db
+                .delete(projectMembers)
+                .where(and(eq(projectMembers.projectId, input.projectId), eq(projectMembers.userId, input.userId)));
+            return { success: true };
+        }),
     },
 
     // ─── Issue ───────────────────────────────────────────────────────────────

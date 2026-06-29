@@ -137,9 +137,7 @@ export function useDeleteComment(issueId: string) {
 }
 
 export function useProjectMembers(projectId: string) {
-    return useQuery(
-        orpc.projectMember.list.queryOptions({ input: { projectId } })
-    );
+    return useQuery(orpc.projectMember.list.queryOptions({ input: { projectId } }));
 }
 
 export function useAvailableMembers(projectId: string, workspaceId: string) {
@@ -155,9 +153,7 @@ export function useAddProjectMember(projectId: string, workspaceId: string) {
     return useMutation({
         ...orpc.projectMember.add.mutationOptions(),
         onSuccess: () => {
-            queryClient.invalidateQueries(
-                orpc.projectMember.list.queryOptions({ input: { projectId } })
-            );
+            queryClient.invalidateQueries(orpc.projectMember.list.queryOptions({ input: { projectId } }));
             queryClient.invalidateQueries(
                 orpc.projectMember.available.queryOptions({
                     input: { projectId, workspaceId },
@@ -172,9 +168,7 @@ export function useRemoveProjectMember(projectId: string) {
     return useMutation({
         ...orpc.projectMember.remove.mutationOptions(),
         onSuccess: () => {
-            queryClient.invalidateQueries(
-                orpc.projectMember.list.queryOptions({ input: { projectId } })
-            );
+            queryClient.invalidateQueries(orpc.projectMember.list.queryOptions({ input: { projectId } }));
         },
     });
 }

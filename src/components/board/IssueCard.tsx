@@ -31,25 +31,21 @@ export function IssueCard({ issue, onClick }: { issue: Issue; onClick?: () => vo
                 exit={{ opacity: 0, y: -8 }}
                 transition={{ duration: 0.15 }}
                 onClick={onClick}
-                className="bg-background border rounded-lg px-3 py-2.5 cursor-pointer
-                   hover:border-primary/40 hover:shadow-sm transition-all
-                   flex flex-col gap-2 group"
+                className="bg-background hover:border-primary/40 group flex cursor-pointer flex-col gap-2 rounded-lg border px-3 py-2.5 transition-all hover:shadow-sm"
             >
-                <p className="text-sm font-medium leading-snug">{issue.title}</p>
+                <p className="text-sm leading-snug font-medium">{issue.title}</p>
 
                 <div className="flex items-center justify-between">
                     <div className="flex items-center gap-2">
                         <PriorityIcon className={`h-3.5 w-3.5 ${PRIORITY_CONFIG[issue.priority].color}`} />
-                        <StatusIcon   className={`h-3.5 w-3.5 ${STATUS_CONFIG[issue.status].color}`} />
+                        <StatusIcon className={`h-3.5 w-3.5 ${STATUS_CONFIG[issue.status].color}`} />
                     </div>
 
                     {/* Assignee avatar */}
                     {assignee && (
                         <Avatar className="h-5 w-5">
                             <AvatarImage src={assignee.avatarUrl ?? ""} />
-                            <AvatarFallback className="text-xs">
-                                {assignee.name[0]}
-                            </AvatarFallback>
+                            <AvatarFallback className="text-xs">{assignee.name[0]}</AvatarFallback>
                         </Avatar>
                     )}
                 </div>
