@@ -14,7 +14,8 @@ import {
     DropdownMenuSeparator,
     DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { FolderKanban, Plus, Settings, LogOut, ChevronsUpDown, Layout } from "lucide-react";
+import { FolderKanban, Plus, Settings, LogOut, ChevronsUpDown, Layout  } from "lucide-react";
+import {CopyInviteLink} from "@/components/sidebar/CopyInviteLink";
 
 export function Sidebar() {
     const router = useRouter();
@@ -107,6 +108,12 @@ export function Sidebar() {
 
                 {projects?.length === 0 && <p className="text-muted-foreground px-2 py-2 text-xs">No projects yet</p>}
             </div>
+
+            {currentWorkspace && (
+                <div className="px-1 mt-2">
+                    <CopyInviteLink slug={currentWorkspace.slug} />
+                </div>
+            )}
 
             {/* User menu */}
             <div className="border-t p-3">
