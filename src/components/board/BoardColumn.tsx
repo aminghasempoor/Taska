@@ -9,14 +9,16 @@ import { STATUS_CONFIG, type IssueStatus } from "@/lib/config";
 import type { Issue } from "@/db/schema";
 
 export function BoardColumn({
-    status,
-    issues,
-    projectId,
-    onIssueClick,
-}: {
-    status: IssueStatus;
-    issues: Issue[];
-    projectId: string;
+                                status,
+                                issues,
+                                projectId,
+                                projectName,  // ← add
+                                onIssueClick,
+                            }: {
+    status:      IssueStatus;
+    issues:      Issue[];
+    projectId:   string;
+    projectName: string;  // ← add
     onIssueClick: (issue: Issue) => void;
 }) {
     const config = STATUS_CONFIG[status];
@@ -35,7 +37,11 @@ export function BoardColumn({
                         {issues.length}
                     </span>
                 </div>
-                <CreateIssueDialog projectId={projectId} defaultStatus={status} />
+                <CreateIssueDialog
+                    projectId={projectId}
+                    projectName={projectName}
+                    defaultStatus={status}
+                />
             </div>
 
             {/* Droppable area */}

@@ -28,7 +28,7 @@ export default function ProjectPage({ params }: { params: Promise<{ workspace: s
                 </div>
             </div>
             <div className="flex-1 overflow-hidden pt-4">
-                <Board projectId={projectId} />
+                <Board projectId={projectId} projectName={project?.name ?? ""} />
             </div>
         </div>
     );
