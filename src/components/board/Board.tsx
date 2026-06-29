@@ -10,7 +10,6 @@ import {
     type DragEndEvent,
     type DragStartEvent,
 } from "@dnd-kit/core";
-import { arrayMove } from "@dnd-kit/sortable";
 import { BoardColumn } from "./BoardColumn";
 import { IssueCard } from "./IssueCard";
 import { IssuePanel } from "@/components/issue/IssuePanel";
@@ -19,7 +18,7 @@ import { useRealtimeBoard } from "@/hooks/useRealtimeBoard";
 import { ALL_STATUSES, type IssueStatus } from "@/lib/config";
 import type { Issue } from "@/db/schema";
 
-export function Board({ projectId }: { projectId: string }) {
+export function Board({ projectId, projectName }: { projectId: string; projectName: string }) {
     useRealtimeBoard(projectId);
 
     const { data: issues = [], isPending } = useIssues(projectId);
@@ -80,6 +79,7 @@ export function Board({ projectId }: { projectId: string }) {
                 <div className="flex h-full gap-4 overflow-x-auto px-6 pb-4">
                     {ALL_STATUSES.map((status) => (
                         <BoardColumn
+                            projectName={projectName}
                             key={status}
                             status={status}
                             issues={grouped[status]}

@@ -8,11 +8,14 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { Sparkles, Loader2 } from "lucide-react";
 import { STATUS_CONFIG, PRIORITY_CONFIG, ALL_STATUSES, type IssueStatus, type IssuePriority } from "@/lib/config";
 import { X, Trash2 } from "lucide-react";
 import type { Issue } from "@/db/schema";
+import { useSummarizeComments } from "@/hooks/useAI";
 
 export function IssuePanel({ issue, onClose }: { issue: Issue | null; onClose: () => void }) {
+    const { summarize, summary, isLoading: isSummarizing, setSummary } = useSummarizeComments();
     const { mutate: updateIssue } = useUpdateIssue();
     const { mutate: deleteIssue } = useDeleteIssue(issue?.projectId ?? "");
 
@@ -155,7 +158,35 @@ export function IssuePanel({ issue, onClose }: { issue: Issue | null; onClose: (
                                     className="resize-none text-sm"
                                 />
                             </div>
+                            <div className="flex flex-col gap-2 border-t pt-4">
+                                <div className="flex items-center justify-between">
+                                    <h3 className="text-sm font-semibold">AI Summary</h3>
+                                    <Button
+                                        variant="ghost"
+                                        size="sm"
+                                        className="h-6 gap-1.5 text-xs text-purple-600 hover:text-purple-700"
+                                        onClick={() => summarize(issue.id)}
+                                        disabled={isSummarizing}
+                                    >
+                                        {isSummarizing ? (
+                                            <Loader2 className="h-3 w-3 animate-spin" />
+                                        ) : (
+                                            <Sparkles className="h-3 w-3" />
+                                        )}
+                                        {isSummarizing ? "Summarizing..." : "Summarize comments"}
+                                    </Button>
+                                </div>
 
+                                {summary && (
+                                    <motion.div
+                                        initial={{ opacity: 0, y: 4 }}
+                                        animate={{ opacity: 1, y: 0 }}
+                                        className="text-muted-foreground rounded-lg border border-purple-100 bg-purple-50 p-3 text-sm leading-relaxed"
+                                    >
+                                        {summary}
+                                    </motion.div>
+                                )}
+                            </div>
                             {/* Comments */}
                             <div className="border-t pt-4">
                                 <CommentSection issueId={issue.id} />
