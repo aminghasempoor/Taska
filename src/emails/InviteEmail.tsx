@@ -1,20 +1,12 @@
-import {
-    Body, Button, Container, Head,
-    Heading, Hr, Html, Preview,
-    Section, Text,
-} from "@react-email/components";
+import { Body, Button, Container, Head, Heading, Hr, Html, Preview, Section, Text } from "@react-email/components";
 
 interface InviteEmailProps {
-    inviterName:   string;
+    inviterName: string;
     workspaceName: string;
-    joinUrl:       string;
+    joinUrl: string;
 }
 
-export function InviteEmail({
-                                inviterName,
-                                workspaceName,
-                                joinUrl,
-                            }: InviteEmailProps) {
+export function InviteEmail({ inviterName, workspaceName, joinUrl }: InviteEmailProps) {
     return (
         <Html>
             <Head />
@@ -23,20 +15,18 @@ export function InviteEmail({
             </Preview>
             <Body style={main}>
                 <Container style={container}>
-
                     {/* Logo / App name */}
                     <Heading style={logo}>Taska</Heading>
 
                     <Heading style={h1}>You have been invited</Heading>
 
                     <Text style={text}>
-                        <strong>{inviterName}</strong> has invited you to join the{" "}
-                        <strong>{workspaceName}</strong> workspace on Taska.
+                        <strong>{inviterName}</strong> has invited you to join the <strong>{workspaceName}</strong>{" "}
+                        workspace on Taska.
                     </Text>
 
                     <Text style={text}>
-                        Click the button below to accept the invitation and start
-                        collaborating with your team.
+                        Click the button below to accept the invitation and start collaborating with your team.
                     </Text>
 
                     <Section style={buttonContainer}>
@@ -48,14 +38,10 @@ export function InviteEmail({
                     <Hr style={hr} />
 
                     <Text style={footer}>
-                        If you did not expect this invitation you can ignore this email.
-                        The link expires in 7 days.
+                        If you did not expect this invitation you can ignore this email. The link expires in 7 days.
                     </Text>
 
-                    <Text style={footer}>
-                        Or copy this link: {joinUrl}
-                    </Text>
-
+                    <Text style={footer}>Or copy this link: {joinUrl}</Text>
                 </Container>
             </Body>
         </Html>

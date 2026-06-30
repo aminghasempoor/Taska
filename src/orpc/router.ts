@@ -17,8 +17,8 @@ import {
 } from "@/validators";
 import { z } from "zod";
 import { clerkProcedure, protectedProcedure } from "./middleware";
-import {resend} from "@/lib/resend";
-import {InviteEmail} from "@/emails/InviteEmail";
+import { resend } from "@/lib/resend";
+import { InviteEmail } from "@/emails/InviteEmail";
 
 export const router = {
     // ─── User ────────────────────────────────────────────────────────────────
@@ -119,11 +119,13 @@ export const router = {
             return workspace;
         }),
         invite: protectedProcedure
-            .input(z.object({
-                email:       z.string().email(),
-                workspaceId: z.string().uuid(),
-                slug:        z.string(),
-            }))
+            .input(
+                z.object({
+                    email: z.string().email(),
+                    workspaceId: z.string().uuid(),
+                    slug: z.string(),
+                })
+            )
             .handler(async ({ input, context }) => {
                 const { user } = context;
 
@@ -140,11 +142,11 @@ export const router = {
 
                 // Send email via Resend
                 const { error } = await resend.emails.send({
-                    from:    "Taska <onboarding@resend.dev>", // use your domain in production
-                    to:      input.email,
+                    from: "Taska <onboarding@resend.dev>", // use your domain in production
+                    to: input.email,
                     subject: `${user!.name} invited you to ${workspace.name} on Taska`,
-                    react:   InviteEmail({
-                        inviterName:   user!.name,
+                    react: InviteEmail({
+                        inviterName: user!.name,
                         workspaceName: workspace.name,
                         joinUrl,
                     }),

@@ -2,24 +2,15 @@
 
 import { useState } from "react";
 import { useInviteMember } from "@/hooks";
-import {
-    Dialog, DialogContent, DialogHeader,
-    DialogTitle, DialogTrigger,
-} from "@/components/ui/dialog";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Mail, Send, Check } from "lucide-react";
 
-export function InviteDialog({
-                                 workspaceId,
-                                 slug,
-                             }: {
-    workspaceId: string;
-    slug:        string;
-}) {
-    const [open,  setOpen]  = useState(false);
+export function InviteDialog({ workspaceId, slug }: { workspaceId: string; slug: string }) {
+    const [open, setOpen] = useState(false);
     const [email, setEmail] = useState("");
-    const [sent,  setSent]  = useState(false);
+    const [sent, setSent] = useState(false);
 
     const { mutate: invite, isPending } = useInviteMember();
 
@@ -47,8 +38,7 @@ export function InviteDialog({
                 <Button
                     variant="ghost"
                     size="sm"
-                    className="w-full justify-start gap-2 text-xs
-                     text-muted-foreground hover:text-foreground h-7 px-2"
+                    className="text-muted-foreground hover:text-foreground h-7 w-full justify-start gap-2 px-2 text-xs"
                 >
                     <Mail className="h-3.5 w-3.5" />
                     Invite by email
@@ -70,11 +60,7 @@ export function InviteDialog({
                         autoFocus
                     />
 
-                    <Button
-                        onClick={handleInvite}
-                        disabled={isPending || !email.trim() || sent}
-                        className="gap-2"
-                    >
+                    <Button onClick={handleInvite} disabled={isPending || !email.trim() || sent} className="gap-2">
                         {sent ? (
                             <>
                                 <Check className="h-4 w-4" />
@@ -90,7 +76,7 @@ export function InviteDialog({
                         )}
                     </Button>
 
-                    <p className="text-xs text-muted-foreground text-center">
+                    <p className="text-muted-foreground text-center text-xs">
                         They&#39;ll receive an email with a link to join this workspace.
                     </p>
                 </div>
