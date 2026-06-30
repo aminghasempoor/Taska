@@ -172,3 +172,12 @@ export function useRemoveProjectMember(projectId: string) {
         },
     });
 }
+
+export function useInviteMember() {
+    return useMutation({
+        ...orpc.workspace.invite.mutationOptions(),
+        onError: (error) => {
+            console.error("Invite error:", error);
+        },
+    });
+}

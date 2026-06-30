@@ -25,6 +25,7 @@
         "@orpc/react": "^1.14.6",
         "@orpc/react-query": "^1.14.6",
         "@orpc/server": "^1.14.6",
+        "@react-email/components": "^1.0.12",
         "@supabase/ssr": "^0.12.0",
         "@supabase/supabase-js": "^2.108.2",
         "@tanstack/react-query": "^5.101.0",

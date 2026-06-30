@@ -16,6 +16,7 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { FolderKanban, Plus, Settings, LogOut, ChevronsUpDown, Layout } from "lucide-react";
 import { CopyInviteLink } from "@/components/sidebar/CopyInviteLink";
+import {InviteDialog} from "@/components/sidebar/InviteDialog";
 
 export function Sidebar() {
     const router = useRouter();
@@ -109,9 +110,14 @@ export function Sidebar() {
                 {projects?.length === 0 && <p className="text-muted-foreground px-2 py-2 text-xs">No projects yet</p>}
             </div>
 
+            {/*invite email and link*/}
             {currentWorkspace && (
-                <div className="mt-2 px-1">
+                <div className="px-1 mt-2 flex flex-col gap-1">
                     <CopyInviteLink slug={currentWorkspace.slug} />
+                    <InviteDialog
+                        workspaceId={currentWorkspace.id}
+                        slug={currentWorkspace.slug}
+                    />
                 </div>
             )}
 
