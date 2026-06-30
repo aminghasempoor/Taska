@@ -99,7 +99,7 @@ export function Board({ projectId, projectName }: { projectId: string; projectNa
             </DndContext>
 
             {/* Issue detail panel */}
-            <IssuePanel issue={selectedIssue} onClose={() => setSelectedIssue(null)} />
+            <IssuePanel projectId={projectId} issue={selectedIssue} onClose={() => setSelectedIssue(null)} />
         </>
     );
 }

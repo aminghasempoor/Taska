@@ -73,6 +73,24 @@ export const deleteCommentSchema = z.object({
     id: z.string().uuid(),
 });
 
+export const addProjectMemberSchema = z.object({
+    projectId: z.string().uuid(),
+    userId: z.string().uuid(),
+});
+
+export const removeProjectMemberSchema = z.object({
+    projectId: z.string().uuid(),
+    userId: z.string().uuid(),
+});
+
+export const getProjectMembersSchema = z.object({
+    projectId: z.string().uuid(),
+});
+
+export const getWorkspaceMembersSchema = z.object({
+    workspaceId: z.string().uuid(),
+});
+
 // ─── Inferred types ────────────────────────────────────────────────────────
 
 export type SyncUserInput = z.infer<typeof syncUserSchema>;
