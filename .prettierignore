@@ -1,0 +1,13 @@
+# Ignore build output
+dist/
+build/
+
+# Ignore dependencies
+node_modules/
+
+# Ignore lock files
+package-lock.json
+yarn.lock
+
+coverage/
+*.min.js
